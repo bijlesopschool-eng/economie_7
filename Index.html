@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Economie Toets — VMBO-TL</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0D7377;--teal-l:#E1F5EE;--teal-d:#085041;
+  --bg:#F7F8FA;--card:#fff;--border:rgba(0,0,0,0.11);
+  --txt:#1a1a1a;--muted:#6b6b6b;--hint:#aaa;
+  --gr-bg:#F0FFF4;--gr-bd:#16a34a;--gr-tx:#15803d;
+  --re-bg:#FEF2F2;--re-bd:#dc2626;--re-tx:#b91c1c;
+  --am-bg:#FFFBEB;--am-bd:#d97706;--am-tx:#92400e;
+  --r:10px;--rs:6px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;line-height:1.5}
+
+/* START */
+#start{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.scard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:580px;width:100%}
+.logo{width:52px;height:52px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.logo svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.s-title{font-size:22px;font-weight:600;text-align:center;margin-bottom:.4rem}
+.s-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:2rem;line-height:1.6}
+.keuze-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem}
+.keuze-sectie{font-size:12px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 4px}
+.kk{border:1.5px solid var(--border);border-radius:var(--r);padding:13px 15px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;align-items:center;gap:12px;background:var(--card)}
+.kk:hover{border-color:#bbb;background:#fafafa}
+.kk.active{border-color:var(--teal);background:var(--teal-l)}
+.kk-dot{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.kk-info{flex:1}
+.kk-name{font-size:14px;font-weight:500}
+.kk-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.kk-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.kk.active .kk-check{background:var(--teal);border-color:var(--teal)}
+.kk-check svg{display:none;width:10px;height:10px;stroke:#fff;stroke-width:2.5;fill:none}
+.kk.active .kk-check svg{display:block}
+.d1{background:#E1F5EE;color:#085041}.d2{background:#E6F1FB;color:#0C447C}
+.d3{background:#FAEEDA;color:#633806}.d4{background:#FAECE7;color:#712B13}
+.d5{background:#EAF3DE;color:#27500A}.d6{background:#F3E5F5;color:#4A148C}
+.d7{background:#FFF3E0;color:#E65100}.d8{background:#E3F2FD;color:#0D47A1}
+.info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem}
+.ir{background:var(--bg);border-radius:var(--rs);padding:10px;text-align:center}
+.ir .n{font-size:20px;font-weight:600;color:var(--teal)}.ir .l{font-size:11px;color:var(--muted);margin-top:2px}
+.btn-start{background:var(--teal);color:#fff;border:none;border-radius:var(--r);padding:13px 0;font-size:15px;font-weight:500;cursor:pointer;width:100%;transition:background .15s;font-family:inherit}
+.btn-start:hover{background:var(--teal-d)}
+.btn-start:disabled{background:#ccc;cursor:default}
+
+/* TOETS */
+#toets{display:none;max-width:740px;margin:0 auto}
+.t-hdr{background:var(--card);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.t-brand{font-size:14px;font-weight:500}.t-meta{font-size:13px;color:var(--muted)}
+.t-body{padding:1.5rem 1rem 5rem}
+.sectie-hdr{margin-bottom:1.25rem;padding-top:.5rem}
+.s-badge{display:inline-block;font-size:12px;font-weight:500;padding:4px 10px;border-radius:99px;margin-bottom:8px}
+.s-title{font-size:17px;font-weight:600;margin-bottom:3px}
+.s-instr{font-size:12px;color:var(--muted)}
+.q-list{display:flex;flex-direction:column;gap:.875rem;margin-bottom:1.75rem}
+.qblok{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+.qblok.correct{border-color:var(--gr-bd)}.qblok.wrong{border-color:var(--re-bd)}
+.qhead{padding:13px 15px;display:flex;gap:10px;align-items:flex-start}
+.qnr{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap;padding-top:2px;min-width:24px}
+.qvraag{font-size:14px;line-height:1.65;color:var(--txt)}
+.qopts{border-top:1px solid var(--border)}
+.qopt{display:flex;align-items:flex-start;gap:10px;padding:10px 15px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s}
+.qopt:last-child{border-bottom:none}
+.qopt:hover:not(.dis){background:#f9f9f9}
+.qopt.sel{background:#EFF6FF}
+.qopt.ok{background:var(--gr-bg)}.qopt.nok{background:var(--re-bg)}.qopt.dis{cursor:default}
+.qopt-radio{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.qopt.sel .qopt-radio{border-color:#2563eb;background:#2563eb}
+.qopt.ok .qopt-radio{border-color:var(--gr-bd);background:var(--gr-bd)}
+.qopt.nok .qopt-radio{border-color:var(--re-bd);background:var(--re-bd)}
+.qdot{width:7px;height:7px;border-radius:50%;background:#fff;display:none}
+.qopt.sel .qdot,.qopt.ok .qdot,.qopt.nok .qdot{display:block}
+.qletter{font-size:12px;font-weight:600;color:var(--muted);min-width:16px}
+.qopt.sel .qletter{color:#1d4ed8}.qopt.ok .qletter{color:var(--gr-tx)}.qopt.nok .qletter{color:var(--re-tx)}
+.qtext{font-size:14px;line-height:1.45;color:var(--txt)}
+.qfb{padding:10px 15px;font-size:12px;line-height:1.55;border-top:1px solid var(--border);border-left:3px solid}
+.qfb.ok{background:var(--gr-bg);color:var(--gr-tx);border-color:var(--gr-bd)}
+.qfb.nok{background:var(--re-bg);color:var(--re-tx);border-color:var(--re-bd)}
+.sub-bar{background:var(--card);border-top:1px solid var(--border);padding:13px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;bottom:0;flex-wrap:wrap;gap:8px}
+.sub-info{font-size:13px;color:var(--muted)}.sub-info strong{color:var(--txt)}
+.btn-prim{background:var(--teal);color:#fff;border:none;border-radius:var(--rs);padding:10px 22px;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-prim:hover:not(:disabled){background:var(--teal-d)}.btn-prim:disabled{background:#ccc;cursor:default}
+.btn-sec{background:var(--card);color:var(--txt);border:1px solid var(--border);border-radius:var(--rs);padding:10px 18px;font-size:14px;cursor:pointer;transition:background .15s;font-family:inherit}
+.btn-sec:hover{background:#f0f0f0}
+
+/* RESULTAAT */
+#resultaat{display:none;max-width:680px;margin:0 auto;padding:2rem 1rem 4rem}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin-bottom:1rem;text-align:center}
+.cring{width:96px;height:96px;border-radius:50%;margin:0 auto 1.25rem;display:flex;flex-direction:column;align-items:center;justify-content:center;border:3px solid}
+.cnum{font-size:34px;font-weight:700;line-height:1}.clbl{font-size:11px;margin-top:2px}
+.r-title{font-size:21px;font-weight:600;margin-bottom:.4rem}
+.r-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:1.5rem}
+.r-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:1.5rem}
+.rsc{background:var(--bg);border-radius:var(--rs);padding:10px;text-align:center}
+.rsc .n{font-size:20px;font-weight:600}.rsc .l{font-size:11px;color:var(--muted);margin-top:2px}
+.pb-wrap{text-align:left;margin-bottom:1rem}
+.pb-title{font-size:13px;font-weight:500;margin-bottom:8px}
+.pb-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--border)}
+.pb-name{min-width:155px;font-size:12px;color:var(--muted)}
+.pb-barw{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.pb-bar{height:100%;border-radius:3px;transition:width .6s}
+.pb-pct{font-size:12px;color:var(--muted);min-width:65px;text-align:right}
+.r-btns{display:flex;gap:8px;justify-content:center;margin-top:1.5rem;flex-wrap:wrap}
+</style>
+</head>
+<body>
+
+<!-- STARTSCHERM -->
+<div id="start">
+<div class="scard">
+  <div class="logo">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+  </div>
+  <div class="s-title">Economie Toets</div>
+  <div class="s-sub">VMBO-TL &nbsp;·&nbsp; 15 meerkeuzevragen per paragraaf<br>Kies de paragraaf die je wil toetsen</div>
+
+  <div class="keuze-grid">
+    <div class="keuze-sectie">Hoofdstuk 7 — Wie heeft het voor het zeggen?</div>
+    <div class="kk active" id="kk71" onclick="selectPara('7.1')">
+      <div class="kk-dot d1">7.1</div>
+      <div class="kk-info"><div class="kk-name">Wat is de overheid?</div><div class="kk-sub">Overheidslagen, subsidie, collectieve goederen, privatisering</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+    <div class="kk" id="kk72" onclick="selectPara('7.2')">
+      <div class="kk-dot d2">7.2</div>
+      <div class="kk-info"><div class="kk-name">Sociale zekerheid</div><div class="kk-sub">WW, WIA, AOW, ANW, solidariteitsbeginsel, premies</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+    <div class="kk" id="kk73" onclick="selectPara('7.3')">
+      <div class="kk-dot d3">7.3</div>
+      <div class="kk-info"><div class="kk-name">Hoe komt de overheid aan geld?</div><div class="kk-sub">Belastingen, draagkracht, profijtbeginsel, accijns, BTW</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+    <div class="kk" id="kk74" onclick="selectPara('7.4')">
+      <div class="kk-dot d4">7.4</div>
+      <div class="kk-info"><div class="kk-name">Wat geeft de overheid uit?</div><div class="kk-sub">Rijksbegroting, begrotingstekort, staatsschuld, Prinsjesdag</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+    <div class="keuze-sectie">Hoofdstuk 8 — Over de grens</div>
+    <div class="kk" id="kk81" onclick="selectPara('8.1')">
+      <div class="kk-dot d5">8.1</div>
+      <div class="kk-info"><div class="kk-name">Waarom de grens over?</div><div class="kk-sub">Import, export, wederuitvoer, betalingsbalans, open economie</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+    <div class="kk" id="kk82" onclick="selectPara('8.2')">
+      <div class="kk-dot d6">8.2</div>
+      <div class="kk-info"><div class="kk-name">Wereldwijde handel</div><div class="kk-sub">Concurrentiepositie, globalisering, protectiemaatregelen</div></div>
+      <div class="kk-check"><svg viewBox="0 0 12 12"><polyline points="1,6 4,9 11,2"/></svg></div>
+    </div>
+  </div>
+
+  <div class="info-row">
+    <div class="ir"><div class="n">15</div><div class="l">vragen</div></div>
+    <div class="ir"><div class="n">4</div><div class="l">antwoorden</div></div>
+    <div class="ir"><div class="n">10</div><div class="l">cijferschaal</div></div>
+  </div>
+  <button class="btn-start" onclick="startToets()">Toets starten</button>
+</div>
+</div>
+
+<!-- TOETSSCHERM -->
+<div id="toets">
+  <div class="t-hdr">
+    <div class="t-brand" id="t-brand">Economie Toets</div>
+    <div class="t-meta" id="t-meta">0 / 15 beantwoord</div>
+  </div>
+  <div class="t-body" id="t-body"></div>
+  <div class="sub-bar">
+    <div class="sub-info" id="sub-info"><strong>0</strong> van 15 beantwoord</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-sec" onclick="showStart()">Terug</button>
+      <button class="btn-prim" id="btn-in" onclick="inleveren()" disabled>Inleveren</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTAAT -->
+<div id="resultaat">
+  <div class="res-card">
+    <div class="cring" id="cring"><div class="cnum" id="cnum"></div><div class="clbl">cijfer</div></div>
+    <div class="r-title" id="r-title"></div>
+    <div class="r-sub" id="r-sub"></div>
+    <div class="r-stats">
+      <div class="rsc"><div class="n" id="rn-goed" style="color:var(--gr-tx)"></div><div class="l">goed</div></div>
+      <div class="rsc"><div class="n" id="rn-fout" style="color:var(--re-tx)"></div><div class="l">fout</div></div>
+      <div class="rsc"><div class="n" id="rn-pct" style="color:var(--teal)"></div><div class="l">score</div></div>
+      <div class="rsc"><div class="n" id="rn-cij" style="color:var(--teal)"></div><div class="l">cijfer</div></div>
+    </div>
+    <div class="pb-wrap" id="pb-wrap"></div>
+    <div class="r-btns">
+      <button class="btn-sec" onclick="showStart()">Andere paragraaf</button>
+      <button class="btn-prim" onclick="bekijkAntw()">Bekijk antwoorden</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════ VRAGENBANK — 15 per paragraaf ═══════════════════ */
+const BANK = {
+
+/* ─── 7.1 ─── */
+"7.1":[
+  {q:"Welke overheidslaag is verantwoordelijk voor het aanvragen van een paspoort?",
+   opts:["Rijksoverheid","Provincie","Gemeente","Waterschap"],ans:2,
+   u:"De gemeente regelt paspoorten, ID-kaarten en rijbewijzen voor haar inwoners."},
+  {q:"Het waterschap verhoogt de dijken langs een rivier. Dit is een voorbeeld van:",
+   opts:["Subsidie verlenen","Marktwerking","Een collectief goed leveren","Privatisering"],ans:2,
+   u:"Dijken zijn collectieve goederen: iedereen profiteert van de bescherming en je kunt niemand apart laten betalen."},
+  {q:"Welke uitspraak over de collectieve en de particuliere sector is JUIST?",
+   opts:["Beide sectoren willen winst maken","Alleen de particuliere sector wil winst maken","Alleen de collectieve sector wil winst maken","Geen van beide wil winst maken"],ans:1,
+   u:"De particuliere sector (bedrijven) streeft naar winst. De collectieve sector (overheid) heeft geen winstoogmerk maar moet wel uitkomen met zijn budget."},
+  {q:"Een gemeente geeft €80.000 subsidie aan een plaatselijke sportvereniging. Wat is het DOEL van deze maatregel?",
+   opts:["Sport afremmen","Sportdeelname stimuleren","Belasting heffen op sport","De sportvereniging privatiseren"],ans:1,
+   u:"Subsidie is een financiële bijdrage waarmee de overheid bepaald gedrag stimuleert, hier: sporten en bewegen."},
+  {q:"Een gemeente besteedt de vuilnisophaling aan via een aanbesteding. Het goedkoopste bedrijf wint de opdracht. Hoe heet dit principe?",
+   opts:["Privatisering","Marktwerking","Subsidie","Accijns"],ans:1,
+   u:"Bij marktwerking laat de overheid bedrijven concurreren op prijs en kwaliteit voor een overheidsopdracht."},
+  {q:"De gemeente verkoopt het gemeentelijk zwembad aan een particulier bedrijf. Hoe heet dit?",
+   opts:["Marktwerking","Subsidie","Privatisering","Accijns"],ans:2,
+   u:"Privatisering: de overheid verkoopt een dienst of activiteit definitief aan een particulier bedrijf."},
+  {q:"Voor welk van de volgende taken is de PROVINCIE verantwoordelijk?",
+   opts:["Aanschaf van gevechtsvliegtuigen","Aanleg van een provinciale weg","Dijken verhogen","Paspoort uitgeven"],ans:1,
+   u:"Provincies zijn verantwoordelijk voor provinciale wegen en het aanwijzen van recreatiegebieden en bedrijventerreinen."},
+  {q:"Waarom levert de overheid collectieve goederen zoals straatverlichting?",
+   opts:["Omdat het winstgevend is","Omdat je niet iedereen apart kunt laten betalen","Omdat het verplicht is door de EU","Omdat bedrijven dat weigeren"],ans:1,
+   u:"Eén van de drie redenen: collectieve goederen zijn niet-uitsluitbaar, je kunt niet voorkomen dat mensen er gebruik van maken zonder te betalen."},
+  {q:"Welk van de volgende is een voorbeeld van een INDIRECTE overheidsmaatregel om gedrag AF TE REMMEN?",
+   opts:["Subsidie voor zonnepanelen","Verplichte fietsverlichting","Accijns op tabak","Verbod op alcohol in de auto"],ans:2,
+   u:"Accijns maakt producten duurder, waardoor consumenten worden ontmoedigd ze te kopen. Dit is een financiële (indirecte) maatregel."},
+  {q:"Een textielondernemer ontwikkelt een volledig nieuwe, duurzame productiemethode. Hoe noem je zo'n ontwikkeling?",
+   opts:["Subsidie","Privatisering","Innovatie","Accijns"],ans:2,
+   u:"Innovatie = een nieuw product of een nieuwe productiemethode. De overheid stimuleert innovatie soms met subsidie."},
+  {q:"Welke overheidslaag is verantwoordelijk voor het beheer van water en de zuivering van afvalwater?",
+   opts:["Rijksoverheid","Provincie","Gemeente","Waterschap"],ans:3,
+   u:"Het waterschap is verantwoordelijk voor waterbeheer, dijken en de zuivering van afvalwater."},
+  {q:"Welke uitspraak over privatisering is JUIST?",
+   opts:["Bij privatisering neemt de overheid een bedrijf over","Bij privatisering verkoopt de overheid een activiteit aan een particulier bedrijf","Bij privatisering geeft de overheid subsidie aan een bedrijf","Bij privatisering heft de overheid accijns op een product"],ans:1,
+   u:"Privatisering = de overheid draagt een dienst of activiteit over aan de markt (particulier bedrijf)."},
+  {q:"Wat is het VOORNAAMSTE verschil tussen marktwerking en privatisering?",
+   opts:["Bij marktwerking blijft de taak een overheidstaak; bij privatisering gaat de taak definitief naar de markt","Bij privatisering blijft de taak een overheidstaak; bij marktwerking gaat de taak naar de markt","Er is geen verschil","Marktwerking is alleen voor grote bedrijven"],ans:0,
+   u:"Bij marktwerking huurt de overheid een bedrijf in maar houdt zelf de regie. Bij privatisering verkoopt ze de activiteit volledig."},
+  {q:"Een gemeente geeft €4.050.000 aan subsidies. De muziekvereniging krijgt €8.640. Welk percentage van de totale subsidie gaat naar de muziekvereniging?",
+   opts:["0,113%","0,213%","2,13%","21,3%"],ans:1,
+   u:"€8.640 ÷ €4.050.000 × 100 = 0,213%."},
+  {q:"Welke maatregel heeft de overheid genomen als ze EXTRA belasting heft op bedrijven die veel CO₂ uitstoten?",
+   opts:["Subsidie","Accijns","Milieuheffing","Privatisering"],ans:2,
+   u:"Milieuheffingen zijn belastingen voor bedrijven die het milieu belasten. Ze remmen milieuvervuiling af."},
+],
+
+/* ─── 7.2 ─── */
+"7.2":[
+  {q:"Samir raakt door een bedrijfsongeval gedeeltelijk arbeidsongeschikt en kan nog maar 40% werken. Op welke uitkering heeft hij recht?",
+   opts:["WW","AOW","WIA","ANW"],ans:2,
+   u:"WIA = Wet werk en inkomen naar arbeidsvermogen. Voor mensen die door ziekte of een ongeluk niet meer volledig kunnen werken."},
+  {q:"Hoe worden werknemersverzekeringen zoals de WW gefinancierd?",
+   opts:["Uit de staatsschuld","Via premies ingehouden op het brutoloon","Via btw-inkomsten","Via gemeentebelasting"],ans:1,
+   u:"Werknemersverzekeringen worden betaald via premies die van het brutoloon worden ingehouden."},
+  {q:"Wat is het solidariteitsbeginsel?",
+   opts:["Rijken betalen meer belasting dan armen","Actieven betalen via premies mee voor niet-actieven","Iedereen betaalt evenveel premie","Werkgevers betalen de volledige premie"],ans:1,
+   u:"Solidariteitsbeginsel: wie kan werken en een inkomen verdient, betaalt premie en draagt zo bij aan uitkeringen voor wie dat niet kan."},
+  {q:"Lisa (54) verliest haar partner bij een auto-ongeluk. Op welke uitkering heeft zij recht?",
+   opts:["WW","WIA","AOW","ANW"],ans:3,
+   u:"ANW = Algemene Nabestaandenwet. Een volksverzekering voor de partner en minderjarige kinderen van iemand die is overleden."},
+  {q:"Wat is het VERSCHIL tussen een werknemersverzekering en een volksverzekering?",
+   opts:["Werknemersverzekeringen zijn voor iedereen; volksverzekeringen alleen voor werknemers","Volksverzekeringen zijn voor alle inwoners; werknemersverzekeringen alleen voor mensen in loondienst","Beide zijn voor alle inwoners van Nederland","Volksverzekeringen worden volledig door de werkgever betaald"],ans:1,
+   u:"Volksverzekeringen gelden voor alle inwoners (AOW, ANW). Werknemersverzekeringen gelden alleen voor (voormalige) werknemers in loondienst (WW, WIA)."},
+  {q:"Waarom is het sociaal minimum voor een stel LAGER dan tweemaal het bedrag voor een alleenstaande?",
+   opts:["Stellen verdienen altijd meer","Stellen delen vaste kosten zoals huur en energie","Stellen betalen minder belasting","Stellen krijgen kinderbijslag"],ans:1,
+   u:"Samenwonenden delen kosten en hebben per persoon minder nodig dan twee alleenstaanden apart."},
+  {q:"Nederland wordt een verzorgingsstaat genoemd. Wat betekent dat?",
+   opts:["De overheid zorgt voor al het vervoer","De overheid garandeert basiszekerheid voor alle burgers","Alle Nederlanders hebben dezelfde baan","De overheid betaalt alle rekeningen voor burgers"],ans:1,
+   u:"Een verzorgingsstaat garandeert voor iedereen een sociaal minimum en basisvoorzieningen zoals onderwijs en zorg."},
+  {q:"Premies volksverzekeringen: AOW 17,90% + ANW 0,10% + Wlz 9,65%. Wat is het totale premiepercentage?",
+   opts:["26,65%","27,65%","28,65%","25,65%"],ans:1,
+   u:"17,90 + 0,10 + 9,65 = 27,65%."},
+  {q:"Marcel verdient €27.500 per jaar. Het premiepercentage volksverzekeringen is 27,65% (max €38.098). Hoeveel premie betaalt hij?",
+   opts:["€ 5.530","€ 7.604","€ 10.534","€ 27.500"],ans:1,
+   u:"Marcel verdient minder dan het maximum, dus: 27,65% × €27.500 = €7.603,75 ≈ €7.604."},
+  {q:"Wat is een sociale voorziening?",
+   opts:["Een premieverzekering voor werknemers","Een uitkering betaald uit belastinggeld voor mensen met te laag inkomen","Een pensioenverzekering","Een zorgpolis voor ambtenaren"],ans:1,
+   u:"Sociale voorzieningen (bijstand, huurtoeslag, zorgtoeslag) worden betaald uit belastingen, niet via premies."},
+  {q:"De overheid verhoogt het maximuminkomen waarover volksverzekeringspremie wordt berekend van €37.149 naar €38.098. Wat is het gevolg voor iemand die €45.000 verdient?",
+   opts:["Hij betaalt nu premie over zijn gehele inkomen","Hij betaalt iets meer premie dan voorheen","Hij betaalt minder premie","Er verandert niets voor hem"],ans:1,
+   u:"De verhoging van het maximum betekent dat er over een iets hoger bedrag premie wordt berekend → iets hogere premie voor mensen die boven het oude maximum verdienen."},
+  {q:"Welke uitkering ontvang je als je de AOW-leeftijd bereikt?",
+   opts:["WW","WIA","ANW","AOW"],ans:3,
+   u:"AOW = Algemene Ouderdomswet. Een volksverzekering die iedereen ontvangt die de AOW-leeftijd bereikt (nu 67 jaar)."},
+  {q:"De totale sociale zekerheidsuitgaven zijn €110,9 mrd. De totale premie-inkomsten zijn €77,1 mrd. Hoeveel vult de overheid aan uit belastingen?",
+   opts:["€ 33,8 mrd","€ 77,1 mrd","€ 110,9 mrd","€ 188,0 mrd"],ans:0,
+   u:"€110,9 − €77,1 = €33,8 miljard tekort — de overheid vult dit aan via belastingen."},
+  {q:"Hicham wordt ontslagen nadat de fabriek waar hij werkte naar het buitenland verhuisde. Op welke uitkering heeft hij recht?",
+   opts:["ANW","WIA","WW","AOW"],ans:2,
+   u:"WW = Werkloosheidswet. Je ontvangt WW na ontslag uit loondienst als je aan de voorwaarden voldoet."},
+  {q:"Welke bewering over het sociaal minimum is JUIST?",
+   opts:["Het sociaal minimum is hoger dan het minimumloon","Het sociaal minimum is lager dan het minimumloon om werken te stimuleren","Het sociaal minimum is gelijk aan het minimumloon","Het sociaal minimum geldt alleen voor mensen boven 65 jaar"],ans:1,
+   u:"Het sociaal minimum is bewust lager dan het minimumloon: werken moet lonen. Als uitkering en loon gelijk zijn, is er geen prikkel om te werken."},
+],
+
+/* ─── 7.3 ─── */
+"7.3":[
+  {q:"Je koopt een brood voor €2,50. Hierin zit BTW verwerkt. BTW is een voorbeeld van:",
+   opts:["Een directe belasting","Een indirecte belasting","Een accijns","Een importheffing"],ans:1,
+   u:"BTW zit verwerkt in de prijs — de winkelier draagt het af. Jij betaalt het indirect. Vandaar: indirecte belasting."},
+  {q:"Lies verdient €35.000 en betaalt 36,97% inkomstenbelasting. Kevin verdient €95.000 en betaalt een hogere gemiddelde belasting. Welk beginsel wordt hier toegepast?",
+   opts:["Profijtbeginsel","Solidariteitsbeginsel","Draagkrachtbeginsel","Gelijkheidsbeginsel"],ans:2,
+   u:"Draagkrachtbeginsel: hogere inkomens betalen een hoger percentage belasting. Dit verkleint inkomensverschillen."},
+  {q:"Wat is een DIRECTE belasting?",
+   opts:["Een belasting verwerkt in de prijs van een product","Een belasting die je zelf betaalt aan de overheid","Een belasting op accijnsproducten","Een heffing op invoer"],ans:1,
+   u:"Directe belasting: je betaalt zelf direct aan de Belastingdienst. Bijv. inkomstenbelasting, vennootschapsbelasting."},
+  {q:"Welke belasting betalen BV's en NV's over hun winst?",
+   opts:["Inkomstenbelasting","Loonbelasting","Vennootschapsbelasting","BTW"],ans:2,
+   u:"Vennootschapsbelasting = belasting die rechtspersonen (BV, NV) betalen over hun winst."},
+  {q:"De overheid verhoogt de accijns op benzine met €0,10 per liter. Wat is het DIRECTE gevolg?",
+   opts:["Benzine wordt goedkoper","Autobezitters rijden meer","Benzine wordt duurder, wat rijden ontmoedigt","De overheid ontvangt minder belasting"],ans:2,
+   u:"Accijns is een afremmende maatregel. Door hogere prijs gaan mensen minder rijden of kiezen voor alternatieven."},
+  {q:"Nick verdient €56.500. Het belastingtarief is 36,97% (voor inkomens tot €75.518). Wat betaalt Nick aan inkomstenbelasting?",
+   opts:["€ 15.527","€ 20.888","€ 25.000","€ 18.617"],ans:1,
+   u:"36,97% × €56.500 = €20.888,05 ≈ €20.888."},
+  {q:"Janneke verdient €79.800. Schijf 1 (t/m €75.518): 36,97%. Schijf 2 (boven €75.518): 49,5%. Wat betaalt ze in totaal?",
+   opts:["€ 27.914","€ 30.034","€ 39.501","€ 33.250"],ans:1,
+   u:"Schijf 1: 36,97%×€75.518=€27.914 | Schijf 2: 49,5%×€4.282=€2.120 | Totaal: €30.034."},
+  {q:"Wat is het profijtbeginsel?",
+   opts:["Hogere inkomens betalen meer belasting","Je betaalt belasting naar de mate waarin je profiteert van overheidsvoorzieningen","Iedereen betaalt evenveel","Bedrijven betalen meer dan particulieren"],ans:1,
+   u:"Profijtbeginsel: je betaalt mee omdat je gebruikmaakt van iets dat de overheid heeft aangelegd. Bijv. motorrijtuigenbelasting."},
+  {q:"Welke belasting betaal je bij de aanschaf van een nieuwe auto?",
+   opts:["Motorrijtuigenbelasting","BTW + accijns","BPM","Vennootschapsbelasting"],ans:2,
+   u:"BPM = belasting op personenauto's en motorrijwielen. Betalen bij aankoop nieuwe auto. De hoogte hangt af van de CO₂-uitstoot."},
+  {q:"Drie accijnsverhogingen op sigaretten: +€1,21 (jan 2023), +€1,21 (jan 2024), +€0,96 (apr 2024). Wat is de totale accijnsverhoging per pakje van 20 sigaretten?",
+   opts:["€ 2,42","€ 3,38","€ 3,96","€ 4,17"],ans:1,
+   u:"€1,21 + €1,21 + €0,96 = €3,38 per pakje."},
+  {q:"Wat zijn niet-belastingontvangsten?",
+   opts:["Belastingen op producten","Andere overheidsinkomsten zoals boetes en dividend van overheidsbedrijven","Premies volksverzekeringen","BTW-opbrengsten"],ans:1,
+   u:"Niet-belastingontvangsten zijn overheidsinkomsten die geen belasting zijn: boetes, winst van staatsbedrijven, etc."},
+  {q:"Wat is het verschil tussen inkomstenbelasting en loonbelasting?",
+   opts:["Loonbelasting is hoger dan inkomstenbelasting","Loonbelasting is een voorheffing op de inkomstenbelasting, ingehouden door de werkgever","Inkomstenbelasting wordt alleen door zelfstandigen betaald","Er is geen verschil"],ans:1,
+   u:"Loonbelasting is een voorheffing: de werkgever houdt het in en draagt het af. Bij de belastingaangifte wordt de definitieve inkomstenbelasting berekend."},
+  {q:"Bij welk beginsel past de motorrijtuigenbelasting?",
+   opts:["Draagkrachtbeginsel","Solidariteitsbeginsel","Profijtbeginsel","Gelijkheidsbeginsel"],ans:2,
+   u:"Motorrijtuigenbelasting past bij het profijtbeginsel: je betaalt mee aan wegen en infrastructuur omdat je er als autobezitter gebruik van maakt."},
+  {q:"Welke belasting betaalt een zelfstandige ondernemer over zijn winst?",
+   opts:["Vennootschapsbelasting","Loonbelasting","Inkomstenbelasting","BTW"],ans:2,
+   u:"Een zelfstandig ondernemer (eenmanszaak, VOF) betaalt inkomstenbelasting over zijn winst. Vennootschapsbelasting is voor BV's/NV's."},
+  {q:"De overheid wil het rijden in vervuilende auto's ontmoedigen. Welke maatregel past hier het BEST bij?",
+   opts:["Subsidie voor vervuilende auto's","Verlaging van de BPM voor vuile auto's","Hogere BPM voor auto's met veel CO₂-uitstoot","Afschaffen van de motorrijtuigenbelasting"],ans:2,
+   u:"Hogere BPM op vervuilende auto's maakt ze duurder, waardoor mensen worden afgeschrikt. Dit is een afremmende maatregel."},
+],
+
+/* ─── 7.4 ─── */
+"7.4":[
+  {q:"Wat staat er in de rijksbegroting?",
+   opts:["Waarom de overheid bepaalde keuzes maakt","De verwachte inkomsten én uitgaven van het Rijk voor het komende jaar","De plannen van de koning","Alleen de belastingopbrengsten"],ans:1,
+   u:"De rijksbegroting = overzicht van verwachte inkomsten en uitgaven van het Rijk voor het komende jaar."},
+  {q:"Op welke dag presenteert de minister van Financiën de rijksbegroting?",
+   opts:["1 januari","3e dinsdag van september — Prinsjesdag","Laatste vrijdag van april","1 mei"],ans:1,
+   u:"Op Prinsjesdag (3e dinsdag van september) leest de koning de troonrede voor en presenteert de minister de begroting."},
+  {q:"De rijksbegroting 2024: inkomsten €402,9 mrd, uitgaven €433,6 mrd. Welke conclusie is JUIST?",
+   opts:["Begrotingsoverschot van €30,7 mrd","Begrotingstekort van €30,7 mrd","De staatsschuld daalt met €30,7 mrd","De overheid heeft €30,7 mrd extra gespaard"],ans:1,
+   u:"Uitgaven > inkomsten → begrotingstekort. €433,6 − €402,9 = €30,7 mrd. De overheid moet dit lenen."},
+  {q:"Welke twee organen moeten de rijksbegroting goedkeuren?",
+   opts:["De koning en de minister-president","De Eerste en Tweede Kamer","De minister van Financiën en de Raad van State","Gemeenten en provincies"],ans:1,
+   u:"De Eerste en Tweede Kamer controleren en keuren de begroting goed. Pas daarna mag de overheid haar plannen uitvoeren."},
+  {q:"Wat zijn rentelasten op de rijksbegroting?",
+   opts:["Belasting die de overheid heft op leningen","Rente die de overheid betaalt over haar openstaande schulden","Winst op overheidsbeleggingen","Premies volksverzekeringen"],ans:1,
+   u:"De overheid leent geld om tekorten te financieren. Over die leningen (staatsschuld) betaalt ze jaarlijks rente: de rentelasten."},
+  {q:"De economie groeit sterk. Meer mensen hebben werk. Wat is het DIRECTE gevolg voor de rijksbegroting?",
+   opts:["De staatsschuld stijgt altijd","De overheid ontvangt meer loonbelasting en BTW, waardoor een overschot kan ontstaan","De overheid moet meer uitkeren","De begroting verandert niet"],ans:1,
+   u:"Meer werkenden = meer loonbelasting + meer bestedingen = meer BTW → hogere inkomsten → kans op overschot."},
+  {q:"Wat is de staatsschuld?",
+   opts:["Het totale belastingbedrag dat de overheid ontvangt","Het totaal van alle openstaande leningen van de overheid","De totale overheidsuitgaven per jaar","Het begrotingsoverschot"],ans:1,
+   u:"Staatsschuld = alle openstaande leningen van de overheid, opgebouwd door jaren van begrotingstekorten."},
+  {q:"De overheid wil het begrotingstekort terugdringen. Welke maatregel vergroot het tekort JUIST?",
+   opts:["Bezuinigen op overheidsuitgaven","Belastingen verhogen","Extra geld uittrekken voor nieuwe subsidies","Ambtenaren ontslaan"],ans:2,
+   u:"Extra subsidies verhogen de uitgaven → groter tekort. De andere opties verlagen uitgaven of verhogen inkomsten."},
+  {q:"Staatsschuld 2023: €481 mrd. De overheid betaalt 1,3% rente. Wat zijn de rentelasten?",
+   opts:["€ 4,8 mrd","€ 6,3 mrd","€ 9,6 mrd","€ 12,5 mrd"],ans:1,
+   u:"1,3% × €481 mrd = €6,253 mrd ≈ €6,3 mrd rentelasten per jaar."},
+  {q:"Rijksbegroting 2024: uitgaven €433,6 mrd, inkomsten €402,9 mrd. Hoeveel procent van de uitgaven gaat naar zorg (€111,3 mrd) en sociale zekerheid (€110,9 mrd) samen?",
+   opts:["41,2%","51,2%","61,2%","31,2%"],ans:1,
+   u:"(€111,3 + €110,9) / €433,6 × 100 = €222,2 / €433,6 × 100 = 51,2%."},
+  {q:"Wat is de MILJOENENNOTA?",
+   opts:["Een overzicht van alle belastingen","Een document waarin de overheid uitlegt waarom zij bepaalde begrotingskeuzes heeft gemaakt","De staatsschuld van Nederland","De begroting van de gemeente"],ans:1,
+   u:"De miljoenennota legt uit WAAROM de overheid bepaalde keuzes heeft gemaakt in de rijksbegroting."},
+  {q:"Hoe kan de overheid een begrotingstekort voorkomen? Kies de JUISTE twee maatregelen.",
+   opts:["Meer lenen en de staatsschuld verhogen","Bezuinigen op uitgaven OF inkomsten verhogen","De AOW-leeftijd verlagen","Meer subsidies verlenen"],ans:1,
+   u:"Twee oplossingen voor een tekort: (1) minder uitgeven (bezuinigen) of (2) meer inkomsten genereren (bijv. belastingen verhogen)."},
+  {q:"Staatsschuld 2023: €481 mrd, 18 mln inwoners. Wat is de staatsschuld per inwoner?",
+   opts:["€ 16.722","€ 26.722","€ 36.722","€ 46.722"],ans:1,
+   u:"€481.000.000.000 ÷ 18.000.000 = €26.722 per inwoner."},
+  {q:"Welk ministerie ontvangt de GROOTSTE uitgavenpost in de rijksbegroting 2024?",
+   opts:["Onderwijs (€50,0 mrd)","Sociale zekerheid (€110,9 mrd)","Zorg (€111,3 mrd)","Justitie (€21,3 mrd)"],ans:2,
+   u:"Zorg (€111,3 mrd) is de grootste post, net iets groter dan sociale zekerheid (€110,9 mrd)."},
+  {q:"De AOW-leeftijd stijgt met 8 maanden voor elk jaar dat de gemiddelde levensverwachting stijgt. Als de levensverwachting met 2 jaar stijgt, hoeveel maanden stijgt de AOW-leeftijd dan?",
+   opts:["8 maanden","12 maanden","16 maanden","24 maanden"],ans:2,
+   u:"2 jaar stijging × 8 maanden = 16 maanden extra AOW-leeftijd."},
+],
+
+/* ─── 8.1 ─── */
+"8.1":[
+  {q:"Nederland importeert aardolie uit het Midden-Oosten. Wat is de BELANGRIJKSTE reden hiervoor?",
+   opts:["Aardolie is goedkoper als je het importeert","Aardolie komt niet of nauwelijks voor in de Nederlandse bodem","Consumenten willen geen Nederlandse olie","Aardolie is beter van kwaliteit uit het buitenland"],ans:1,
+   u:"Grondstoffen die niet in Nederland voorkomen, moeten worden geïmporteerd. Dit is een van de redenen voor import."},
+  {q:"Nederlandse telers exporteren 1.475.000.000 kg tomaten voor €1,05 per kilo. Wat is de uitvoerwaarde?",
+   opts:["€ 1.475.000.000","€ 1.548.750.000","€ 1.400.000.000","€ 1.600.000.000"],ans:1,
+   u:"Uitvoerwaarde = hoeveelheid × prijs = 1.475.000.000 × €1,05 = €1.548.750.000."},
+  {q:"Mango's uit Thailand worden via Rotterdam ingevoerd en zonder bewerking doorgestuurd naar andere EU-landen. Hoe heet dit?",
+   opts:["Directe export","Wederuitvoer","Invoersubstitutie","Handelsoverschot"],ans:1,
+   u:"Wederuitvoer: importeren en daarna onbewerkt doorverkopen aan het buitenland."},
+  {q:"De invoerwaarde van goederen is €623 mrd. De uitvoerwaarde is €711 mrd. Wat staat er op de betalingsbalans voor goederen?",
+   opts:["Handelstekort van €88 mrd","Handelsoverschot van €88 mrd","Tekort van €623 mrd","Overschot van €711 mrd"],ans:1,
+   u:"Uitvoerwaarde > invoerwaarde → handelsoverschot. €711 − €623 = +€88 mrd."},
+  {q:"Het nationaal inkomen van Nederland is €1.033 mrd. De invoerwaarde is €623 mrd. Wat is het importpercentage?",
+   opts:["60,3%","68,8%","37,5%","16,6%"],ans:0,
+   u:"Importpercentage = invoerwaarde ÷ nationaal inkomen × 100 = €623 ÷ €1.033 × 100 = 60,3%."},
+  {q:"Wat is een OPEN economie?",
+   opts:["Een economie zonder belastingen","Een economie met hoge import- en exportpercentages","Een economie waarbij de grenzen gesloten zijn","Een economie met alleen export"],ans:1,
+   u:"Een open economie handelt veel met het buitenland: hoge import- én exportpercentages ten opzichte van het nationaal inkomen."},
+  {q:"Welk voordeel heeft export voor Nederland?",
+   opts:["Meer keuze voor buitenlandse consumenten","Meer inkomsten voor bedrijven en meer werkgelegenheid in Nederland","Lagere prijzen voor geïmporteerde goederen","Minder concurrentie voor Nederlandse bedrijven"],ans:1,
+   u:"Export vergroot het afzetgebied, levert meer inkomsten op en zorgt voor werkgelegenheid in de productie."},
+  {q:"Een Nederlandse familie gaat op vakantie naar Italië. Voor Nederland is dit:",
+   opts:["Export van diensten","Import van diensten","Wederuitvoer","Geen in- of uitvoer"],ans:1,
+   u:"De familie koopt diensten in het buitenland en betaalt daarvoor aan Italië. Voor Nederland is dit import van diensten."},
+  {q:"Nederland voert in een jaar €9 mln kilo bonbons in voor €6,10 per kilo. Wat is de invoerwaarde?",
+   opts:["€ 9.000.006,10","€ 54.900.000","€ 1.475.410","€ 549.000.000"],ans:1,
+   u:"Invoerwaarde = hoeveelheid × prijs = 9.000.000 × €6,10 = €54.900.000."},
+  {q:"De uitvoerwaarde van diensten is €206,5 mrd. De invoerwaarde van diensten is €195,5 mrd. Wat is het saldo?",
+   opts:["Tekort van €11,0 mrd","Overschot van €11,0 mrd","Overschot van €195,5 mrd","Tekort van €206,5 mrd"],ans:1,
+   u:"€206,5 − €195,5 = +€11,0 mrd → overschot op de dienstenbalans."},
+  {q:"Totale goederenuitvoer Nederland: €548 mrd. In Nederland gemaakt: €252 mrd. Wat is de waarde van de wederuitvoer?",
+   opts:["€ 252 mrd","€ 296 mrd","€ 800 mrd","€ 548 mrd"],ans:1,
+   u:"Wederuitvoer = €548 − €252 = €296 mrd."},
+  {q:"Welk percentage van de totale uitvoer bestaat uit wederuitvoer? (Totaal €548 mrd, wederuitvoer €296 mrd)",
+   opts:["46,0%","54,0%","60,3%","37,5%"],ans:1,
+   u:"€296 ÷ €548 × 100 = 54,0% van de totale uitvoer bestaat uit wederuitvoer."},
+  {q:"Duitsland: NI = €4.210 mrd, invoerwaarde = €1.365 mrd. Wat is het importpercentage?",
+   opts:["24,5%","32,4%","37,8%","42,1%"],ans:1,
+   u:"€1.365 ÷ €4.210 × 100 = 32,4%."},
+  {q:"Griekenland: uitvoerwaarde €31 mrd, invoerwaarde €51 mrd. Wat staat op de betalingsbalans?",
+   opts:["Overschot van €20 mrd","Tekort van €20 mrd","Overschot van €51 mrd","Tekort van €31 mrd"],ans:1,
+   u:"€31 − €51 = −€20 mrd → handelstekort van €20 mrd."},
+  {q:"In een eerder jaar was het NI van Nederland €959 mrd. De uitvoerwaarde was €628 mrd. Wat is het exportpercentage?",
+   opts:["60,4%","65,5%","68,8%","72,3%"],ans:1,
+   u:"€628 ÷ €959 × 100 = 65,5%."},
+],
+
+/* ─── 8.2 ─── */
+"8.2":[
+  {q:"Wat is de internationale concurrentiepositie van een land?",
+   opts:["Het totale exportbedrag van een land","De mate waarin een land beter en/of goedkoper kan produceren dan andere landen","Het aantal multinationals in een land","De hoogte van de importheffingen"],ans:1,
+   u:"Internationale concurrentiepositie = hoe goed een land kan concurreren op kwaliteit en prijs ten opzichte van andere landen."},
+  {q:"Bangladesh exporteert kleding; Nederland exporteert machines. Dit is een voorbeeld van:",
+   opts:["Globalisering","Protectionisme","Internationale arbeidsverdeling","Wederuitvoer"],ans:2,
+   u:"Internationale arbeidsverdeling: landen produceren wat ze het beste kunnen (comparatief voordeel)."},
+  {q:"De lonen in Nederland stijgen sterk. Wat is het DIRECTE gevolg voor de internationale concurrentiepositie?",
+   opts:["De positie verbetert, want werknemers verdienen meer","De positie verslechtert, want produceren wordt duurder","De positie verandert niet","De positie verbetert, want bedrijven investeren meer"],ans:1,
+   u:"Hogere lonen = hogere productiekosten → producten worden duurder → minder concurrerend op de wereldmarkt."},
+  {q:"Welke factor VERBETERT de Nederlandse internationale concurrentiepositie?",
+   opts:["Stijgende loonkosten","Slechter onderwijs","Goede havens en infrastructuur","Hogere belastingen voor exporteurs"],ans:2,
+   u:"Goede infrastructuur (Rotterdam, Schiphol) verlaagt transportkosten en maakt Nederland aantrekkelijk als handelsland."},
+  {q:"De EU heft 17% importheffing op Chinese elektrische auto's van €32.000. Wat is de nieuwe prijs?",
+   opts:["€ 32.000","€ 33.700","€ 37.440","€ 38.400"],ans:2,
+   u:"17% × €32.000 = €5.440 heffing. €32.000 + €5.440 = €37.440."},
+  {q:"Wat is het DOEL van een exportsubsidie?",
+   opts:["Importproducten goedkoper maken","Eigen exportproducten goedkoper maken om beter te concurreren","Buitenlandse bedrijven belasten","De invoer verminderen"],ans:1,
+   u:"Exportsubsidie: overheid geeft geld aan exporteurs, zodat ze hun producten goedkoper kunnen aanbieden in het buitenland."},
+  {q:"Welke protectiemaatregel legt een MAXIMUM op aan het te importeren aantal producten?",
+   opts:["Importheffing","Exportsubsidie","Contingentering (importquota)","Invoerverbod"],ans:2,
+   u:"Contingentering of importquota: er mag maximaal een bepaalde hoeveelheid van een product worden ingevoerd."},
+  {q:"Een importheffing van 25% wordt geheven op een product van $40.000. Wat is de nieuwe prijs?",
+   opts:["$ 40.000","$ 45.000","$ 50.000","$ 55.000"],ans:2,
+   u:"25% × $40.000 = $10.000. Nieuwe prijs: $40.000 + $10.000 = $50.000."},
+  {q:"Door globalisering verplaatst een kledingfabriek haar productie naar Bangladesh. Wat is het gevolg voor Nederlandse werknemers?",
+   opts:["Ze verdienen meer","Ze kunnen meer exporteren","Ze verliezen hun baan","De concurrentiepositie verbetert"],ans:2,
+   u:"Als productie naar lagelonenlanden vertrekt, vallen arbeidsplaatsen weg in Nederland. Dit is een nadeel van globalisering."},
+  {q:"Wat is globalisering?",
+   opts:["Het sluiten van nationale grenzen voor handel","De toename van wereldwijde contacten en handel waarbij bedrijven minder aan één land gebonden zijn","Het invoeren van protectiemaatregelen","Het verbod op wederuitvoer"],ans:1,
+   u:"Globalisering = de wereld wordt kleiner door betere communicatie, transport en vrijhandel. Multinationals opereren wereldwijd."},
+  {q:"EU geeft €0,30 exportsubsidie per kg boter. Fabriek exporteert 2.000.000 kg. Wat is de totale subsidie?",
+   opts:["€ 200.000","€ 600.000","€ 2.000.300","€ 6.000.000"],ans:1,
+   u:"€0,30 × 2.000.000 = €600.000."},
+  {q:"Een importheffing daalt van 20% naar 8% op een product van €500. Hoeveel GOEDKOPER wordt het product?",
+   opts:["€ 40","€ 60","€ 80","€ 100"],ans:1,
+   u:"Oud: 20%×€500=€100. Nieuw: 8%×€500=€40. Verschil: €100−€40=€60 goedkoper."},
+  {q:"Welke oorzaak heeft bijgedragen aan globalisering?",
+   opts:["Strengere grensbewaking","Hogere transportkosten","Opkomst van het internet en betere communicatie","Meer protectiemaatregelen"],ans:2,
+   u:"Internet maakt wereldwijde communicatie en handel eenvoudiger. Dit is een van de belangrijkste oorzaken van globalisering."},
+  {q:"Welke uitspraak over protectiemaatregelen is JUIST?",
+   opts:["Protectiemaatregelen stimuleren altijd de internationale handel","Protectiemaatregelen beschermen de eigen industrie en werkgelegenheid","Protectiemaatregelen zijn hetzelfde als exportsubsidies","Protectiemaatregelen zijn in alle landen verboden"],ans:1,
+   u:"Protectiemaatregelen beschermen de eigen economie tegen buitenlandse concurrentie, maar leiden vaak tot minder internationale handel."},
+  {q:"Een machinefabriek exporteert 500 machines voor €80.000/stuk. De overheid geeft 5% exportsubsidie. Wat is de nieuwe exportprijs per machine?",
+   opts:["€ 76.000","€ 80.000","€ 84.000","€ 78.000"],ans:0,
+   u:"5% × €80.000 = €4.000 subsidie. Nieuwe prijs: €80.000 − €4.000 = €76.000."},
+]
+};
+
+const PARA_NAMEN = {
+  "7.1":"7.1 — Wat is de overheid?","7.2":"7.2 — Sociale zekerheid",
+  "7.3":"7.3 — Hoe komt de overheid aan geld?","7.4":"7.4 — Wat geeft de overheid uit?",
+  "8.1":"8.1 — Waarom de grens over?","8.2":"8.2 — Wereldwijde handel"
+};
+const PARA_KLEUREN = {
+  "7.1":"#0F6E56","7.2":"#185FA5","7.3":"#854F0B","7.4":"#993C1D",
+  "8.1":"#3B6D11","8.2":"#534AB7"
+};
+const PARA_BADGE = {
+  "7.1":"#E1F5EE","7.2":"#E6F1FB","7.3":"#FAEEDA","7.4":"#FAECE7",
+  "8.1":"#EAF3DE","8.2":"#EEEDFE"
+};
+const PARA_BADGE_TX = {
+  "7.1":"#085041","7.2":"#0C447C","7.3":"#633806","7.4":"#712B13",
+  "8.1":"#27500A","8.2":"#3C3489"
+};
+
+let gekozenPara = "7.1";
+let vragen = [], antwoorden = {}, ingediend = false;
+
+function selectPara(p){
+  gekozenPara = p;
+  document.querySelectorAll('.kk').forEach(el=>el.classList.remove('active'));
+  document.getElementById('kk'+p.replace('.',''))?.classList.add('active');
+}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+
+function startToets(){
+  vragen = shuffle([...BANK[gekozenPara]]);
+  antwoorden = {}; ingediend = false;
+  document.getElementById('start').style.display='none';
+  document.getElementById('toets').style.display='block';
+  document.getElementById('resultaat').style.display='none';
+  document.querySelector('.sub-bar').style.display='flex';
+  document.getElementById('t-brand').textContent = 'Economie Toets — ' + PARA_NAMEN[gekozenPara];
+  renderToets();
+}
+
+function renderToets(){
+  const L = ['A','B','C','D'];
+  const bg = PARA_BADGE[gekozenPara], tx = PARA_BADGE_TX[gekozenPara];
+  let html = `<div class="sectie-hdr">
+    <span class="s-badge" style="background:${bg};color:${tx}">${PARA_NAMEN[gekozenPara]}</span>
+    <div class="s-title">Toets ${PARA_NAMEN[gekozenPara]}</div>
+    <div class="s-instr">Kies bij elke vraag het juiste antwoord. Alle 15 vragen moeten beantwoord zijn voor je kunt inleveren.</div>
+  </div><div class="q-list">`;
+
+  vragen.forEach((q,i)=>{
+    html += `<div class="qblok" id="qb${i}">
+      <div class="qhead"><span class="qnr">${i+1}.</span><div class="qvraag">${q.q}</div></div>
+      <div class="qopts">`;
+    q.opts.forEach((o,j)=>{
+      html += `<div class="qopt" id="qo${i}_${j}" onclick="kies(${i},${j})">
+        <div class="qopt-radio"><div class="qdot"></div></div>
+        <span class="qletter">${L[j]}</span>
+        <span class="qtext">${o}</span>
+      </div>`;
+    });
+    html += `</div><div class="qfb" id="qfb${i}" style="display:none"></div></div>`;
+  });
+  html += '</div>';
+  document.getElementById('t-body').innerHTML = html;
+  updateStatus();
+}
+
+function kies(qi,oi){
+  if(ingediend) return;
+  antwoorden[qi]=oi;
+  const q=vragen[qi];
+  for(let j=0;j<q.opts.length;j++){
+    const el=document.getElementById(`qo${qi}_${j}`);
+    el.classList.remove('sel','ok','nok');
+    if(j===oi) el.classList.add('sel');
+  }
+  updateStatus();
+}
+
+function updateStatus(){
+  const n=Object.keys(antwoorden).length, tot=vragen.length;
+  document.getElementById('t-meta').textContent=`${n} / ${tot} beantwoord`;
+  document.getElementById('sub-info').innerHTML=`<strong>${n}</strong> van ${tot} beantwoord`;
+  document.getElementById('btn-in').disabled = n<tot;
+}
+
+function inleveren(){
+  if(Object.keys(antwoorden).length<vragen.length) return;
+  ingediend=true;
+  const L=['A','B','C','D'];
+  let goed=0;
+  vragen.forEach((q,i)=>{
+    const g=antwoorden[i]===q.ans;
+    if(g) goed++;
+    const blok=document.getElementById(`qb${i}`);
+    blok.classList.add(g?'correct':'wrong');
+    for(let j=0;j<q.opts.length;j++){
+      const el=document.getElementById(`qo${i}_${j}`);
+      el.classList.remove('sel'); el.classList.add('dis');
+      if(j===q.ans) el.classList.add('ok');
+      else if(j===antwoorden[i]) el.classList.add('nok');
+    }
+    const fb=document.getElementById(`qfb${i}`);
+    fb.className='qfb '+(g?'ok':'nok');
+    fb.innerHTML=g
+      ?`<strong>Goed!</strong> ${q.u}`
+      :`<strong>Fout.</strong> Het juiste antwoord is <strong>${L[q.ans]}: ${q.opts[q.ans]}</strong>. ${q.u}`;
+    fb.style.display='block';
+  });
+
+  const fout=vragen.length-goed;
+  const pct=Math.round(goed/vragen.length*100);
+  const cijferRaw=1+(goed/vragen.length)*9;
+  const cijfer=Math.round(cijferRaw*10)/10;
+
+  document.getElementById('toets').style.display='none';
+  document.getElementById('resultaat').style.display='block';
+
+  let ringK,ringBg,title,sub;
+  if(cijfer>=7){ringK='#16a34a';ringBg='#F0FFF4';title='Geslaagd!';sub=`Je hebt een ${cijfer.toFixed(1)} gehaald — goed gedaan! Je beheerst de stof van ${PARA_NAMEN[gekozenPara]}.`;}
+  else if(cijfer>=5.5){ringK='#d97706';ringBg='#FFFBEB';title='Net voldoende';sub=`Je hebt een ${cijfer.toFixed(1)}. Bekijk de fout beantwoorde vragen goed en herhaal de stof.`;}
+  else{ringK='#dc2626';ringBg='#FEF2F2';title='Onvoldoende';sub=`Je hebt een ${cijfer.toFixed(1)}. Herhaal de stof van ${PARA_NAMEN[gekozenPara]} en probeer opnieuw.`;}
+
+  const cr=document.getElementById('cring');
+  cr.style.borderColor=ringK; cr.style.background=ringBg;
+  document.getElementById('cnum').style.color=ringK;
+  document.getElementById('cnum').textContent=cijfer.toFixed(1);
+  document.getElementById('r-title').textContent=title;
+  document.getElementById('r-sub').textContent=sub;
+  document.getElementById('rn-goed').textContent=goed;
+  document.getElementById('rn-fout').textContent=fout;
+  document.getElementById('rn-pct').textContent=pct+'%';
+  document.getElementById('rn-cij').textContent=cijfer.toFixed(1);
+
+  const kl=PARA_KLEUREN[gekozenPara];
+  document.getElementById('pb-wrap').innerHTML=`
+    <div class="pb-title">Score voor ${PARA_NAMEN[gekozenPara]}</div>
+    <div class="pb-row">
+      <span class="pb-name">${PARA_NAMEN[gekozenPara]}</span>
+      <div class="pb-barw"><div class="pb-bar" style="width:${pct}%;background:${kl}"></div></div>
+      <span class="pb-pct">${goed}/15 — ${pct}%</span>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function bekijkAntw(){
+  document.getElementById('resultaat').style.display='none';
+  document.getElementById('toets').style.display='block';
+  document.querySelector('.sub-bar').style.display='none';
+  window.scrollTo(0,0);
+}
+
+function showStart(){
+  document.getElementById('toets').style.display='none';
+  document.getElementById('resultaat').style.display='none';
+  document.getElementById('start').style.display='flex';
+  if(document.querySelector('.sub-bar')) document.querySelector('.sub-bar').style.display='flex';
+  ingediend=false; antwoorden={};
+}
+</script>
+</body>
+</html>
